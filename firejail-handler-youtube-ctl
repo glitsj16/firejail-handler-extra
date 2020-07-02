@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+## Youtube URL handler for Firejail
+#+ (1) inside the sandbox `firejail-handler-youtube` drops a URL at a read/write accessible location
+#+ (2) outside the sandbox this script picks up the URL and starts sandboxed media play
+
+# shellcheck disable=SC2034
+
+### vars
+# source common settings
+. "firejail-handler-settings-extra.inc"
+
+
+### logic
+# ensure dropzone exists
+[ ! -d "$_drop_dir" ] && mkdir -p "$_drop_dir"
+
+# ensure needed commands are available
+if [ ! -x "/usr/bin/inotifywait" ]; then
+    echo "Command not found: /usr/bin/inotifywait - aborting"
+	exit 1
+fi
+if [ ! -x "$_media_player_bin" ]; then
+    echo "Command not found: ${_cmd} - aborting"
+	exit 1
+fi
+
+## watch dropzone
+[ -e "$_drop_file_yt" ] && rm -f "$_drop_file_yt"
+touch "$_drop_file_yt"
+inotifywait -m -e modify --format '%f' "$_drop_file_yt" | while read -r
+do
+    if [ -s "$_drop_file_yt" ]; then
+        #+ get URL
+        _url="$(head -n 1 "$_drop_file_yt")"
+        #+ start sandboxed media play
+        "$_media_player_bin" "$_url" &
+        # reset
+        truncate -s 0 "$_drop_file_yt" &
+    fi
+done
+
+exit 0
