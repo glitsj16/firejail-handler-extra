@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+## BitTorrent URL handler for Firejail
+#+ (1) `firejail-handler-bittorrent.desktop` defines a custom
+#+ handler for magnet/.torrent hyperlinks
+#+ (2) this script saves a drop file containing the URL at a read/write
+#+ accessible location inside the sandbox
+#+ (3) outside the sandbox `firejail-handler-bittorrent-ctl` uses inotifywait to pick up
+#+ the URL and relays it to a fully sandboxed BitTorrent application
+#+ (defaults to local transmission-daemon)
+
+# shellcheck disable=SC2034
+
+### vars
+# source common settings
+. "firejail-handler-settings-extra.inc"
+
+
+### logic
+# local / remote daemon support
+if [ "$_media_dl_mode" = "local" ]; then
+    # LOCAL daemon
+    _download_dir="$_download_dir"
+    _local_daemon_status="$(systemctl is-active "$_systemd_service")"
+    if [ "$_local_daemon_status" = "inactive" ]; then
+	sudo systemctl start "$_systemd_service"
+    fi
+    _rpc_port="$_rpc_port_local"
+else
+    # REMOTE daemon (via SSH tunnel)
+    _download_dir="${_sshfs_mountpoint}/${_download_dir}"
+    _rpc_port="$_rpc_port_tunnel"
+fi
+
+## process requests
+if [ "$1" ]; then
+    case "$1" in
+	magnet\:\?*)
+	    #+ create drop file
+	    echo "$1" > "$_drop_file_bt"
+	    ;;
+	*\.torrent)
+	    #+ add .torrent file to configured watch dir in bittorrent client
+	    mv -f "$1" "$_download_dir"
+	    #+ create drop file
+	    echo "$1" > "$_drop_file_bt"
+	    ;;
+    esac
+else
+    # no param
+    exit 1
+fi
+
+exit 0
