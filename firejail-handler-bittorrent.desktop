@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Firejail :: BitTorrent URL Handler
+Comment=Manage Firejail BitTorrent URL drop files
+Exec=firejail-handler-bittorrent %u
+Type=Application
+
+MimeType=application/x-bittorrent;x-scheme-handler/magnet;
+NoDisplay=true
