@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Firejail :: Youtube URL Handler
+Comment=Manage Firejail Youtube URL drop files
+Exec=sh -c "firejail-handler-youtube-ctl > /dev/null 2>&1 &"
+Terminal=false
+Type=Application
+NoDisplay=true
