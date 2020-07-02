@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Firejail :: BitTorrent URL Handler
+Comment=Manage Firejail BitTorrent URL drop files
+Exec=sh -c "firejail-handler-bittorrent-ctl > /dev/null 2>&1 &"
+Terminal=false
+Type=Application
+NoDisplay=true
