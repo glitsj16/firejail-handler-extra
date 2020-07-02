@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Firejail :: Youtube URL Handler
+Comment=Manage Firejail Youtube URL drop files
+Exec=firejail-handler-youtube %U
+Type=Application
+
+MimeType=x-scheme-handler/fjyt-protocol;
+NoDisplay=true
