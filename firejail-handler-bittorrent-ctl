@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+## BitTorrent URL handler for Firejail
+#+ (1) inside the sandbox `firejail-handler-bittorrent` drops a URL
+#+ at a read/write accessible location
+#+ (2) outside the sandbox this script picks up the URL and starts
+#+ a fully sandboxed bittorrent application
+#+ (defaults to a local transmission-daemon)
+
+# shellcheck disable=SC2034
+
+### vars
+# source common settings
+. "firejail-handler-settings-extra.inc"
+
+_selfie="$(basename "$0")"
+
+
+### logic
+# ensure dropzone exists
+[ ! -d "$_drop_dir" ] && mkdir -p "$_drop_dir"
+
+# ensure needed commands are available
+if [ ! -x "/usr/bin/inotifywait" ]; then
+    echo "Command not found: /usr/bin/inotifywait - aborting"
+	exit 1
+fi
+if [ ! -x "$_rpc_bin" ]; then
+    echo "Command not found: ${_cmd} - aborting"
+	exit 1
+fi
+
+## watch dropzone
+[ -e "$_drop_file_bt" ] && rm -f "$_drop_file_bt"
+touch "$_drop_file_bt"
+inotifywait -m -e modify --format '%f' "$_drop_file_bt" | while read -r
+do
+    if [ -s "$_drop_file_bt" ]; then
+	    #+ get bittorrent data
+        _bt_data="$(head -n 1 "$_drop_file_bt")"
+        _drop_is_magnet="$(grep -cf "^magnet" "$_drop_file_bt")"
+        _drop_is_torrent_file="$(grep -cf "\.torrent" "$_drop_file_bt")"
+        if [ "$_drop_is_magnet" != 0 ]; then
+            #+ we have a magnet link
+            # add magnet
+            "$_rpc_bin" "$_rpc_port" -a "$_bt_data" > /dev/null 2>&1 &
+            # notify user
+            if [ -x "/usr/bin/notify-send" ]; then
+                _bt_name="$(echo "$_bt_data" | awk '{split($0,a,"&"); print a[2]}' | sed "s|dn=||" | sed "s|+| |g" | sed "s|%27|\'|g")"
+                notify-send "Firejail :: BT handler" "Magnet added\\n${_bt_name}" &
+            fi
+        elif [ "$_drop_is_torrent_file" != 0 ]; then
+            #+ we have a .torrent file
+            # add .torrent
+            # moved into the configured watch dir, nothing else to do here
+            # notify user
+            if [ -x "/usr/bin/notify-send" ]; then
+                _bt_name="$(echo "$_bt_data" | sed "s/.torrent//")"
+                notify-send "Firejail :: BT handler" "Torrent added\\n${_bt_name}" &
+            fi
+        else
+            #+ assume error
+            # notify user
+            if [ -x "/usr/bin/notify-send" ]; then
+                notify-send "Firejail :: BT handler" "ERROR processing link [${_selfie}]" &
+            fi
+        fi
+        # reset
+        truncate -s 0 "$_drop_file_bt" &
+    fi
+done
+
+exit 0
