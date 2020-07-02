@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+## Youtube URL handler for Firejail
+#+ (1) `firejail-handler-youtube.desktop` defines a custom
+#+ protocol handler for Youtube hyperlinks
+#+ (2) a user.js script in the web browser turns 'https://www.youtube.com/watch?v=foo'
+#+ links into 'fjyt://www.youtube.com/watch?v=foo'
+#+ (3) pointing the web browser to this script will save a drop file containing
+#+ the relevant URL at a read/write accessible location inside the sandbox
+#+ (4) outside the sandbox `firejail-handler-youtube-ctl` uses inotifywait to pick up
+#+ the URL and relays it to a fully sandboxed media player
+#+ (defaults to mpv)
+
+# shellcheck disable=SC2034
+
+### vars
+# source common settings
+. "firejail-handler-settings-extra.inc"
+
+
+### logic
+_url="$(echo "$1" | sed -e 's%fjyt://%%')";
+
+# create drop file
+echo "$_url" > "$_drop_file_yt"
+
+exit 0
