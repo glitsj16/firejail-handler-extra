@@ -17,11 +17,13 @@ Only 2 extra handlers are available:
 Both can be installed seperately, and the common settings file needs to be installed only once.
 There are no plans to support other firejail handlers in this repository. As such it is more a Proof-Of-Concept than a fully developed application. The rationale is quite simple, so users can copy/paste the scripts and edit them for a specific use-case.
 
-Do note that your web browser will need an add-on like [Greasemonkey](https://github.com/greasemonkey/greasemonkey), [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/), plus a user.js script to rewrite URL's on-the-fly into the supported _fjyt_ protocol. An example `fjyt.user.js` is supplied, but might need additional editing.
+For the `Youtube` handler your web browser will need an add-on like [Greasemonkey](https://github.com/greasemonkey/greasemonkey), [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/), plus a user.js script to rewrite URL's on-the-fly into the supported _fjyt_ protocol. An example `fjyt.user.js` is supplied, but might need additional editing.
 
 ## Installing
 
-Ensure the following dependencies are installed:
+Arch Linux users can install from the AUR: [firejail-handler-extra](https://aur.archlinux.org/packages/firejail-handler-extra/).
+
+On other distributions you'll need the following dependencies:
 
 	* firejail
 	* inotify-tools
