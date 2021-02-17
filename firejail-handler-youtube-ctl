@@ -12,7 +12,7 @@
 
 
 ### logic
-# ensure dropzone exists
+# ensure drop location exists
 [ ! -d "$_drop_dir" ] && mkdir -p "$_drop_dir"
 
 # ensure needed commands are available
@@ -25,7 +25,7 @@ if [ ! -x "$_media_player_bin" ]; then
 	exit 1
 fi
 
-## watch dropzone
+## watch drop location
 [ -e "$_drop_file_yt" ] && rm -f "$_drop_file_yt"
 touch "$_drop_file_yt"
 inotifywait -m -e modify --format '%f' "$_drop_file_yt" | while read -r
