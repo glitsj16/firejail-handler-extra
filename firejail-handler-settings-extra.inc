@@ -10,14 +10,28 @@
 ## IMPORTANT: use full paths in the variables below
 #######################################
 
+# follow XDG specifications and fallback to hardcoded drop dir location
+if [ "$(which xdg-user-dir)" ]; then
+    _drop_dir="$(which xdg-user-dir DOWNLOAD)"
+else
+    _xdg_config_home="$(env | grep -c "XDG_CONFIG_HOME")"
+    if [ "$_xdg_config_home" = 1 ]; then
+	if [ -s "${XDG_CONFIG_HOME}/.config/user-dirs.dirs" ]; then
+	    _drop_dir="$(grep "^XDG_DOWNLOAD_DIR=" "${XDG_CONFIG_HOME}/.config/user-dirs.dirs" | awk '{split($0,a,"="); print a[2]}' | sed 's/"//g')"
+	fi
+    elif [ -s "${HOME}/.config/user-dirs.dirs" ]; then
+	_drop_dir="$(grep "^XDG_DOWNLOAD_DIR=" "${HOME}/.config/user-dirs.dirs" | awk '{split($0,a,"="); print a[2]}' | sed 's/"//g')"
+    else
+	_drop_dir="${HOME}/Downloads"
+    fi
+fi
+
 # bittorrent client watch dir for .torrent files
-_download_dir="${HOME}/Downloads"
+_download_dir="$_drop_dir"
 
-## dropzone location where the URL data will be saved temporarily
+## drop dir location where the URL data will be saved temporarily
 #+ IMPORTANT: this needs to be read/write accessible in the sandbox
-#+ ~/Downloads can be assumed to be a supported location
-_drop_dir="${HOME}/Downloads/.firejail-dropzone"
-
+_drop_dir="${_drop_dir}/.firejail-dropzone"
 
 ### protocol handlers
 #+ bittorrent
@@ -28,7 +42,6 @@ _rpc_port_local="9091"
 _rpc_port_tunnel="9999"
 _sshfs_mountpoint="/mnt/sshfs-remote"
 _systemd_service="transmission-daemon"
-
 #+ youtube
 _drop_file_yt="${_drop_dir}/youtube.drop"
 _media_player_bin="/usr/local/bin/mpv"
