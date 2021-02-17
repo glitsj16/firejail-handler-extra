@@ -30,7 +30,7 @@ if [ ! -x "$_rpc_bin" ]; then
 	exit 1
 fi
 
-## watch dropzone
+## watch drop location
 [ -e "$_drop_file_bt" ] && rm -f "$_drop_file_bt"
 touch "$_drop_file_bt"
 inotifywait -m -e modify --format '%f' "$_drop_file_bt" | while read -r
