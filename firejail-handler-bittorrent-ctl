@@ -33,7 +33,7 @@ fi
 ## watch drop location
 [ -e "$_drop_file_bt" ] && rm -f "$_drop_file_bt"
 touch "$_drop_file_bt"
-inotifywait -m -e modify --format '%f' "$_drop_file_bt" | while read -r
+inotifywait -m -e modify --format '%f' "$_drop_file_bt" | while read -r line
 do
     if [ -s "$_drop_file_bt" ]; then
 	    #+ get bittorrent data
