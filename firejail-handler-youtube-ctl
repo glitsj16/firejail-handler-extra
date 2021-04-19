@@ -28,7 +28,7 @@ fi
 ## watch drop location
 [ -e "$_drop_file_yt" ] && rm -f "$_drop_file_yt"
 touch "$_drop_file_yt"
-inotifywait -m -e modify --format '%f' "$_drop_file_yt" | while read -r
+inotifywait -m -e modify --format '%f' "$_drop_file_yt" | while read -r line
 do
     if [ -s "$_drop_file_yt" ]; then
         #+ get URL
