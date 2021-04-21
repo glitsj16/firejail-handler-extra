@@ -42,12 +42,18 @@ $ sudo install -Dm755 ./firejail-handler-bittorrent /usr/bin/firejail-handler-bi
 $ sudo install -Dm755 ./firejail-handler-bittorrent-ctl /usr/bin/firejail-handler-bittorrent-ctl
 $ sudo install -Dm644 ./firejail-handler-bittorrent.desktop /usr/share/applications/firejail-handler-bittorrent.desktop
 $ sudo install -Dm644 ./firejail-handler-bittorrent-ctl.desktop /etc/xdg/autostart/firejail-handler-bittorrent-ctl.desktop
-$ sudo install -Dm644 ./firejail-handler-settings-extra.inc /usr/bin/firejail-handler-settings-extra.inc
+$ sudo install -Dm644 ./firejail-handler-settings-extra.inc /etc/firejail/firejail-handler-settings-extra.inc
 $ sudo install -Dm755 ./firejail-handler-youtube /usr/bin/firejail-handler-youtube
 $ sudo install -Dm755 ./firejail-handler-youtube-ctl /usr/bin/firejail-handler-youtube-ctl
 $ sudo install -Dm644 ./firejail-handler-youtube.desktop /usr/share/applications/firejail-handler-youtube.desktop
 $ sudo install -Dm644 ./firejail-handler-youtube-ctl.desktop /etc/xdg/autostart/firejail-handler-youtube-ctl.desktop
 `````
+
+
+## Settings
+
+The scripts will look for user-provided settings in `~/.config/firejail/firejail-handler-settings-extra.inc` first. If that file does not exist it will try `/etc/firejail/firejail-handler-settings-extra.inc`. Finally, if none of these locations exist, hard-coded defaults will be used.
+
 
 ## Usage
 
