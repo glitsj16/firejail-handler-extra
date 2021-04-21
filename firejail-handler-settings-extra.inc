@@ -10,7 +10,7 @@
 ## IMPORTANT: use full paths in the variables below
 #######################################
 
-# follow XDG specifications and fallback to hardcoded drop dir location
+# follow XDG specifications and fall back to hard-coded drop dir location
 if [ "$(which xdg-user-dir)" ]; then
     _drop_dir="$(which xdg-user-dir DOWNLOAD)"
 else
