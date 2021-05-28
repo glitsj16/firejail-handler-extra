@@ -12,12 +12,12 @@
 
 # follow XDG specifications and fall back to hard-coded drop dir location
 if [ "$(which xdg-user-dir)" ]; then
-    _drop_dir="$(which xdg-user-dir DOWNLOAD)"
+    _drop_dir="$(xdg-user-dir DOWNLOAD)"
 else
     _xdg_config_home="$(env | grep -c "XDG_CONFIG_HOME")"
     if [ "$_xdg_config_home" = 1 ]; then
-	if [ -s "${XDG_CONFIG_HOME}/.config/user-dirs.dirs" ]; then
-	    _drop_dir="$(grep "^XDG_DOWNLOAD_DIR=" "${XDG_CONFIG_HOME}/.config/user-dirs.dirs" | awk '{split($0,a,"="); print a[2]}' | sed 's/"//g')"
+	if [ -s "${XDG_CONFIG_HOME}/user-dirs.dirs" ]; then
+	    _drop_dir="$(grep "^XDG_DOWNLOAD_DIR=" "${XDG_CONFIG_HOME}/user-dirs.dirs" | awk '{split($0,a,"="); print a[2]}' | sed 's/"//g')"
 	fi
     elif [ -s "${HOME}/.config/user-dirs.dirs" ]; then
 	_drop_dir="$(grep "^XDG_DOWNLOAD_DIR=" "${HOME}/.config/user-dirs.dirs" | awk '{split($0,a,"="); print a[2]}' | sed 's/"//g')"
