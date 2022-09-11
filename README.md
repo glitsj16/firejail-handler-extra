@@ -57,5 +57,9 @@ The scripts will look for user-provided settings in `~/.config/firejail/firejail
 
 ## Usage
 
-Enable the custom MimeType handlers and configure your web browser(s) accordingly.
-Re-login to autostart the inotifywait script(s) via the relevant XDG desktop file(s) or start things manually by other means.
+- Enable the custom MimeType handlers and configure your web browser(s) accordingly.
+- If the relevant firejail profile has the private-bin option, you will have to make sure
+to add everything that's needed for the handler script(s) to work inside the sandbox.
+The easiest way to achieve this is by creating a ~/.config/firejail/foo.local override
+and take care of the additional private-bin commands there.
+- Re-login to autostart the inotifywait script(s) via the relevant XDG desktop file(s) or start things manually by other means.
